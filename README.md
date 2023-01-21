@@ -6,4 +6,4 @@
 * .gitignore file for VisualStudioCode project
 * README.md - this file itself - using Markdown language
 
-### © 2023 eo.vi | fb/justeovii
+### © 2023 eo.vi | https://www.facebook.com/justeovii/
