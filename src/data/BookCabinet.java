@@ -55,7 +55,6 @@ public class BookCabinet {
 
         do {
             name = Tools.getString("Enter the name: ", "The name is required!");
-            //
         } while (name.length() < 5 || name.length() > 30);
 
         do {
@@ -91,7 +90,7 @@ public class BookCabinet {
     // Function 02
     public void searchBook() {
         List<Book> x;
-        int choice, pos;
+        int choice;
         Menu subMenu = new Menu("Books Search System");
         subMenu.addNewOption("1. Search a book by publisher's id");
         subMenu.addNewOption("2. Search a book by book's name");
@@ -157,6 +156,7 @@ public class BookCabinet {
         return null;
     }
 
+    //
     public List<Book> searchBooksByPublishersID(String publisherId) {
         List<Publisher> checkList = getPublihsersFromFile();
         List<Book> tmp = new ArrayList<>();
@@ -178,6 +178,7 @@ public class BookCabinet {
         return tmp;
     }
 
+    // Find the list of the books by book's name
     public List<Book> searchBooksList(String bookName) {
         List<Book> tmp = new ArrayList<>();
         if (list.isEmpty())
@@ -200,8 +201,6 @@ public class BookCabinet {
         id = Tools.getString("Enter the id: ", "The id is required!");
         pos = searchABook(id);
         x = searchABookByID(id);
-
-        Book b = // from user -> val -> save
 
         if (pos == -1)
             System.out.println("Book's name doesn't exist!");
@@ -290,7 +289,8 @@ public class BookCabinet {
         List<Book> bookList = getBooksFromFile(fileName);
         Collections.sort(bookList);
 
-        System.out.println("------------------------------------------------------------------------------------------------------------");
+        System.out.println(
+                "------------------------------------------------------------------------------------------------------------");
         System.out.println("Here is the book list after sorted");
         String header = String.format("|%-8s|%-25s|%-6s|%-8s|%-7s|%-25s|%-15s|", "ID", "Name", "Price", "Quantity",
                 "SubTotal", "Publisher's name", "Status");
@@ -316,5 +316,64 @@ public class BookCabinet {
             if (x.getPrice() > 100)
                 x.showProfile_V1();
         }
+    }
+    //Find the list of books based on publisherId and bookName
+    //User are required to input these two fields to find the book(s)
+    public List<Book> searchBooksByPublisherIdAndName(String publisherId, String bookName) {
+        List<Book> bookList = new ArrayList<>();
+        List<Publisher> checkList = getPublihsersFromFile();
+        if (list.isEmpty())
+            return null;
+
+        if (publisherId.isEmpty() && bookName.isEmpty())
+            return null;
+        else if (bookName.isEmpty())
+            bookList = searchBooksByPublishersID(publisherId);
+        else if (publisherId.isEmpty()) 
+            bookList = searchBooksList(bookName);
+        else {
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < checkList.size(); j++) {
+                    // Check wheter the inputted publisherId is match with the publisherId in Publisher.txt
+                    if ((list.get(i).getPublisherID().equalsIgnoreCase(publisherId)))
+                        if (checkList.get(j).getId().equalsIgnoreCase(publisherId))
+                        //Check whether the inputted bookName is match with bookName in BookCabinet list
+                            if (list.get(i).getName().contains(bookName))
+                                bookList.add(list.get(i));
+                }
+            }
+        }
+        if (bookList.isEmpty())
+            return null;
+        return bookList;
+    }
+    //Another function to find the list of book(s)
+    public void searchBooks() {
+        String publisherId = null;
+        String bookName = null;
+        List<Book> searchedList;
+
+        System.out.print("Enter the publisher's id(Pxxxxx): ");
+        publisherId = sc.nextLine();
+        System.out.print("Enter the book's name: ");
+        bookName = sc.nextLine();
+
+        searchedList = searchBooksByPublisherIdAndName(publisherId, bookName);
+        if (searchedList == null) {
+            System.out.println("Not found!");
+            return;
+        }
+        System.out.println("=====================================================================================");
+        System.out.println("Here is the list of book(s) that you want to search");
+        for (Book x : searchedList) {
+            x.showProfile_V1();
+        }
+        
+    }
+
+    public static void main(String[] args) {
+        BookCabinet tc = new BookCabinet();
+        tc.searchBooks();
+
     }
 }
